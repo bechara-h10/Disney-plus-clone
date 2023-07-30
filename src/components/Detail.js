@@ -1,38 +1,64 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import db from "../firebaseConfig";
+import { collection, doc, getDoc } from "firebase/firestore";
+
+async function getMovie(id) {
+  try {
+    const docRef = doc(db, "movies", id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists) {
+      return docSnap.data();
+    } else {
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 function Detail() {
+  const { id } = useParams();
+  const [movie, setMovie] = useState();
+
+  useEffect(() => {
+    getMovie(id).then((movie) => {
+      setMovie(movie);
+    });
+  }, []);
+
+  console.log(movie);
+
   return (
     <Container>
-      <Background>
-        <img src="https://static1.makeuseofimages.com/wordpress/wp-content/uploads/2020/08/best-simpsons-episodes.jpg" />
-      </Background>
-      <ImageTitle>
-        <img src="./images/viewers-pixar.png" />
-      </ImageTitle>
-      <Controls>
-        <PlayButton>
-          <img src="./images/play-icon-black.png" />
-          <span>Play</span>
-        </PlayButton>
-        <TrailerButton>
-          <img src="./images/play-icon-white.png" />
-          <span>Trailer</span>
-        </TrailerButton>
-        <AddButton>
-          <span>+</span>
-        </AddButton>
-        <GroupWatchButton>
-          <img src="./images/group-icon.png" />
-        </GroupWatchButton>
-      </Controls>
-      <SubTitle>2018 7m Family, Fantasy, Kids, Animation</SubTitle>
-      <Description>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta
-        pariatur aspernatur, nemo iure veniam nesciunt dolorem ab deleniti
-        impedit dolore voluptas, maiores sapiente perferendis magni commodi
-        dignissimos ea ad. Autem?
-      </Description>
+      {movie && (
+        <React.Fragment>
+          <Background>
+            <img src={movie.backgroundImg} />
+          </Background>
+          <ImageTitle>
+            <img src={movie.titleImg} />
+          </ImageTitle>
+          <Controls>
+            <PlayButton>
+              <i className="fa-solid fa-play"></i>
+              <span>Play</span>
+            </PlayButton>
+            <TrailerButton>
+              <i className="fa-solid fa-play"></i>
+              <span>Trailer</span>
+            </TrailerButton>
+            <AddButton>
+              <span>+</span>
+            </AddButton>
+            <GroupWatchButton>
+              <i className="fa-solid fa-people-group"></i>
+            </GroupWatchButton>
+          </Controls>
+          <SubTitle>{movie.subTitle}</SubTitle>
+          <Description>{movie.description}</Description>
+        </React.Fragment>
+      )}
     </Container>
   );
 }
@@ -90,6 +116,9 @@ const PlayButton = styled.button`
   margin-right: 22px;
   letter-spacing: 1.8px;
   text-transform: uppercase;
+  span {
+    margin-left: 8px;
+  }
   &:hover {
     background-color: rgb(198, 198, 198);
   }
@@ -120,6 +149,8 @@ const AddButton = styled.button`
 
 const GroupWatchButton = styled(AddButton)`
   background-color: rgb(0, 0, 0);
+  color: #fff;
+  font-size: 22px;
 `;
 
 const SubTitle = styled.div`
