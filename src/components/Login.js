@@ -1,12 +1,53 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import {
+  selectUserName,
+  selectUserPhoto,
+  setUserLogin,
+} from "../features/user/userSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { auth, provider } from "../firebaseConfig";
+import { signInWithPopup, onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const userName = useSelector(selectUserName);
+  const userPhoto = useSelector(selectUserPhoto);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        dispatch(
+          setUserLogin({
+            name: user.displayName,
+            email: user.email,
+            photo: user.photoURL,
+          })
+        );
+      }
+    });
+  }, []);
+
+  const signIn = () => {
+    signInWithPopup(auth, provider).then((result) => {
+      let user = result.user;
+      dispatch(
+        setUserLogin({
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+        })
+      );
+      navigate("/");
+    });
+  };
+
   return (
     <Container>
       <CTA>
         <CTALogoOne src="./images/cta-logo-one.svg" />
-        <SignUp>Get all there</SignUp>
+        <SignUp onClick={signIn}>Get all there</SignUp>
         <Description>
           Get Premier Access to Raya and the Last Dragon for an additional fee
           with Disney+ subscription. As of 03/26/21, the price of Dinsey+ and

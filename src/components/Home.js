@@ -3,10 +3,13 @@ import styled from "styled-components";
 import ImgSlider from "./ImgSlider";
 import Viewers from "./Viewers";
 import Movies from "./Movies";
-import db from "../firebaseConfig";
+import db, { auth } from "../firebaseConfig";
 import { collection, getDocs, getDoc, doc, query } from "firebase/firestore";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setMovies } from "../features/movie/movieSlice";
+import { selectUserName, selectUserPhoto } from "../features/user/userSlice";
+import { onAuthStateChanged } from "firebase/auth";
 
 async function getMovies(dispatch) {
   const moviesCol = collection(db, "movies");
@@ -18,16 +21,30 @@ async function getMovies(dispatch) {
 }
 
 function Home() {
+  const userName = useSelector(selectUserName);
+  const userPhoto = useSelector(selectUserPhoto);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        navigate("/");
+      }
+    });
     getMovies(dispatch);
   }, []);
 
   return (
     <Container>
-      <ImgSlider />
-      <Viewers />
-      <Movies />
+      {userName ? (
+        <React.Fragment>
+          <ImgSlider />
+          <Viewers />
+          <Movies />
+        </React.Fragment>
+      ) : (
+        navigate("/login")
+      )}
     </Container>
   );
 }

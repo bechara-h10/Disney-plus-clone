@@ -12,13 +12,56 @@ function Movies() {
       <Content>
         {movies &&
           movies.map((movie) => {
-            return (
-              <Wrap key={movie.id}>
-                <Link to={`/detail/${movie.id}`}>
-                  <img src={movie.cardImg} />
-                </Link>
-              </Wrap>
-            );
+            if (movie.type === "recommend")
+              return (
+                <Wrap key={movie.id}>
+                  <Link to={`/detail/${movie.id}`}>
+                    <img src={movie.cardImg} />
+                  </Link>
+                </Wrap>
+              );
+          })}
+      </Content>
+      <h4>Original</h4>
+      <Content>
+        {movies &&
+          movies.map((movie) => {
+            if (movie.type === "original")
+              return (
+                <Wrap key={movie.id}>
+                  <Link to={`/detail/${movie.id}`}>
+                    <img src={movie.cardImg} />
+                  </Link>
+                </Wrap>
+              );
+          })}
+      </Content>
+      <h4>New</h4>
+      <Content>
+        {movies &&
+          movies.map((movie) => {
+            if (movie.type === "new")
+              return (
+                <Wrap key={movie.id}>
+                  <Link to={`/detail/${movie.id}`}>
+                    <img src={movie.cardImg} />
+                  </Link>
+                </Wrap>
+              );
+          })}
+      </Content>
+      <h4>Trending</h4>
+      <Content>
+        {movies &&
+          movies.map((movie) => {
+            if (movie.type === "trending")
+              return (
+                <Wrap key={movie.id}>
+                  <Link to={`/detail/${movie.id}`}>
+                    <img src={movie.cardImg} />
+                  </Link>
+                </Wrap>
+              );
           })}
       </Content>
     </Container>
@@ -33,6 +76,9 @@ const Content = styled.div`
   display: grid;
   gap: 25px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  @media (width <= 768px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 `;
 
 const Wrap = styled.div`
