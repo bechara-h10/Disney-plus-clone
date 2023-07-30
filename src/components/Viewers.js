@@ -29,6 +29,9 @@ const Container = styled.div`
   gap: 25px;
   padding: 30px 0 26px;
   grid-template-columns: repeat(5, minmax(0, 1fr));
+  @media (width<=768px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 `;
 
 const Wrap = styled.div`

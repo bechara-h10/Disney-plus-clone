@@ -1,23 +1,22 @@
 import React from "react";
 import styled from "styled-components";
+import { selectMovies } from "../features/movie/movieSlice";
+import { useSelector } from "react-redux";
 
 function Movies() {
+  const movies = useSelector(selectMovies);
   return (
     <Container>
       <h4>Recommended for You</h4>
       <Content>
-        <Wrap>
-          <img src="https://static1.makeuseofimages.com/wordpress/wp-content/uploads/2020/08/best-simpsons-episodes.jpg" />
-        </Wrap>
-        <Wrap>
-          <img src="https://static1.makeuseofimages.com/wordpress/wp-content/uploads/2020/08/best-simpsons-episodes.jpg" />
-        </Wrap>
-        <Wrap>
-          <img src="https://static1.makeuseofimages.com/wordpress/wp-content/uploads/2020/08/best-simpsons-episodes.jpg" />
-        </Wrap>
-        <Wrap>
-          <img src="https://static1.makeuseofimages.com/wordpress/wp-content/uploads/2020/08/best-simpsons-episodes.jpg" />
-        </Wrap>
+        {movies &&
+          movies.map((movie) => {
+            return (
+              <Wrap key={movie.id}>
+                <img src={movie.cardImg} />
+              </Wrap>
+            );
+          })}
       </Content>
     </Container>
   );
